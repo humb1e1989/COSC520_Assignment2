@@ -1,8 +1,24 @@
-.venv/
+# Python virtual environments
+.venv*/
+venv/
+env/
+
+# Python cache files
 __pycache__/
 *.py[cod]
 .pytest_cache/
-data/*.bin
-results/*.csv
-results/plots/*.png
 
+# Packaging/build files
+*.egg-info/
+build/
+dist/
+
+# macOS metadata
+.DS_Store
+
+# Temporary benchmark results
+results/smoke.csv
+results/smoke_plots/
+
+# Optional compressed dataset copy
+data/*.zip
