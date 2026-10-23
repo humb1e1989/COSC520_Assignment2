@@ -1,2 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Never convert line endings in binary files (keeps the dataset checksum identical on Windows)
+*.bin binary
+*.png binary

@@ -41,16 +41,29 @@ Every value is a signed 64-bit integer, so storage in bytes is the count above Ã
 
 ## Setup
 
+macOS / Linux:
+
 ```bash
 git clone https://github.com/humb1e1989/COSC520_Assignment2.git
 cd COSC520_Assignment2
-
 python3 -m venv .venv
-source .venv/bin/activate            # macOS / Linux
-# .venv\Scripts\activate             # Windows
-
+source .venv/bin/activate
 python -m pip install -e .
 ```
+
+Windows (PowerShell):
+
+```powershell
+git clone https://github.com/humb1e1989/COSC520_Assignment2.git
+cd COSC520_Assignment2
+py -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install -e .
+```
+
+If PowerShell refuses to run `Activate.ps1`, run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, or use `.venv\Scripts\activate.bat` in Command Prompt.
+
+> **Multi-line commands.** The examples below use `\` to continue a line, which works in bash and zsh. In Windows PowerShell, replace each trailing `\` with a backtick `` ` ``, or put the whole command on one line.
 
 `pip install -e .` installs the `advanced_structures` package from `src/` in editable mode, so the `python -m advanced_structures.<module>` commands below work from the project folder.
 
@@ -120,16 +133,26 @@ A benchmark of size `n` uses the first `n` values of the file.
 
 **Option A: download.** The file is included in this repository. A direct download link is in the header of this README.
 
-**Option B: regenerate it.** The generator is deterministic, so this command produces a byte-identical file:
+**Option B: regenerate it.** The generator is deterministic, so this command produces a byte-identical file on macOS, Linux, and Windows. It takes about 10 seconds. The command is on one line so that it works in every shell:
 
 ```bash
-python -m advanced_structures.benchmark --generate --sizes 10000000 \
-  --operations 0 --repetitions 1 --workloads mixed \
-  --dataset data/values_10000000.bin --output results/dataset_check.csv
-
-shasum -a 256 data/values_10000000.bin      # macOS
-# sha256sum data/values_10000000.bin        # Linux
+python -m advanced_structures.benchmark --generate --sizes 10000000 --operations 0 --repetitions 1 --workloads mixed --dataset data/values_10000000.bin --output results/dataset_check.csv
 ```
+
+Then check that the file matches the SHA-256 checksum in the table above:
+
+```bash
+shasum -a 256 data/values_10000000.bin                         # macOS
+sha256sum data/values_10000000.bin                             # Linux
+Get-FileHash data\values_10000000.bin -Algorithm SHA256        # Windows PowerShell
+certutil -hashfile data\values_10000000.bin SHA256             # Windows Command Prompt
+```
+
+The file is identical on every platform for three reasons:
+
+- `random.Random(seed)` is Python's own Mersenne Twister. It produces the same sequence on every operating system.
+- `array('q')` is always 8 bytes per value.
+- The code writes and reads the file explicitly in little-endian byte order, whatever the native byte order of the machine is ([`dataset.py`](src/advanced_structures/dataset.py)).
 
 **Why binary rather than CSV or Excel?**
 
