@@ -1,0 +1,6 @@
+Metadata-Version: 2.4
+Name: cosc520-assignment2
+Version: 0.1.0
+Summary: Comparison of three dynamic range-sum data structures
+Requires-Python: >=3.10
+Requires-Dist: matplotlib>=3.7
